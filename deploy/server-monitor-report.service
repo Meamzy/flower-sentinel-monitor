@@ -1,0 +1,13 @@
+[Unit]
+Description=Telegram hourly report for server-monitor (Docker)
+Wants=server-monitor-sample.timer
+After=network.target
+
+[Service]
+Type=oneshot
+# where your project lives on the host
+WorkingDirectory=/home/meo/server-monitor
+# ensure docker is on PATH
+Environment=PATH=/usr/bin:/usr/local/bin
+# exec into the dummy container you started with make run
+ExecStart=/usr/bin/docker exec server-monitor python /app/monitor.py report

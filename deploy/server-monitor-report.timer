@@ -1,0 +1,11 @@
+[Unit]
+Description=Hourly trigger for server-monitor-report.service
+
+[Timer]
+# run on the hour, *and* once ≈1min after boot
+OnCalendar=hourly
+OnBootSec=1min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

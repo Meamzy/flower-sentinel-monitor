@@ -1,0 +1,9 @@
+[Unit]
+Description=5-minute sample for server-monitor (Docker)
+After=network.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/meo/server-monitor
+Environment=PATH=/usr/bin:/usr/local/bin
+ExecStart=/usr/bin/docker exec server-monitor python /app/monitor.py
