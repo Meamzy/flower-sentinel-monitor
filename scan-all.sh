@@ -40,8 +40,6 @@ echo
 echo "*** 6) Gitleaks secrets scan (filesystem only) ***"
 gitleaks detect \
   --no-git \
-  --exclude-path ".env" \
-  --verbose \
   --source . \
   --report-format table \
   --exit-code 1 \

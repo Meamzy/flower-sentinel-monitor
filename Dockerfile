@@ -1,5 +1,5 @@
 # Dockerfile
-FROM python:3.11-slim
+FROM python:3.13.3-slim-bookworm
 
 WORKDIR /app
 
@@ -11,6 +11,8 @@ RUN apt-get update \
  && pip install --no-cache-dir -r requirements.txt \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir --upgrade "setuptools>=70.0.0"
 
 COPY monitor.py ./
 COPY .env .env
