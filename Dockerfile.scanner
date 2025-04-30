@@ -1,0 +1,28 @@
+# Dockerfile.scanner
+FROM python:3.11-slim
+
+LABEL maintainer="you@example.com"
+
+# Install OS deps
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      curl git ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Python security tools
+RUN pip install --no-cache-dir bandit safety
+
+# Install Trivy
+RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh
+
+# Install Gitleaks
+ENV GITLEAKS_VERSION=v8.16.0
+RUN curl -sSL \
+      https://github.com/zricethezav/gitleaks/releases/download/${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION#v}_linux_x64.tar.gz \
+    | tar xz -C /usr/local/bin gitleaks
+
+# Copy our entry-point scan script
+COPY scan-all.sh /usr/local/bin/scan-all.sh
+RUN chmod +x /usr/local/bin/scan-all.sh
+
+ENTRYPOINT ["/usr/local/bin/scan-all.sh"]

@@ -9,6 +9,9 @@ help:
 IMAGE_NAME := server-monitor
 CONTAINER_NAME := server-monitor
 
+project_dir := $(shell pwd)
+scanner_image := server-monitor-scanner
+
 # Environment file and project directory paths
 env_file := .env
 project_dir := $(PWD)
@@ -92,3 +95,19 @@ debug:
 	@systemctl list-timers --all | grep server-monitor
 	@echo "Service statuses (oneshot services finish inactive after run, that's expected):"
 	- systemctl status server-monitor-sample.service server-monitor-report.service || true
+
+.PHONY: scanner scan
+
+# Build the scanner image
+scanner: Dockerfile.scanner scan-all.sh
+	docker build \
+	  -t $(scanner_image) \
+	  -f Dockerfile.scanner \
+	  .
+
+# Run the full security scan
+scan: scanner
+	docker run --rm \
+	  -v $(project_dir):/project:ro \
+	  -v /var/run/docker.sock:/var/run/docker.sock \
+	  $(scanner_image)
